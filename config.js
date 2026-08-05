@@ -8,7 +8,7 @@
 
 window.NUTSA_CONFIG = {
   // Your Apps Script Web App endpoint
-  API_URL: "https://script.google.com/macros/s/PASTE_YOUR_DEPLOYMENT_ID_HERE/exec",
+  API_URL: "https://script.google.com/macros/s/AKfycbxc8Bxw0eFXX595oSEB02OhPaLRSZAHQ7DUC398bfZKwWm82Tlx5dFqGTi2G-33_zt_/exec",
 
   // Auto-login credentials (no login screen — opens straight to dashboard)
   WORKER: 1,
