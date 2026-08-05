@@ -12,40 +12,12 @@
 </head>
 <body>
 
-<!-- ================== LOGIN ================== -->
-<section id="login-screen" class="screen active">
-  <div class="login-hero">
-    <div class="brand">
-      <div class="brand-logo">🌰</div>
-      <h1>Nutsa</h1>
-      <p class="brand-sub">Système de confirmation</p>
-    </div>
-
-    <div class="login-card">
-      <h2>Connexion agent</h2>
-
-      <label class="field">
-        <span>Numéro d'agent</span>
-        <div class="worker-picker">
-          <button type="button" class="worker-btn" data-worker="1">1</button>
-          <button type="button" class="worker-btn" data-worker="2">2</button>
-          <button type="button" class="worker-btn" data-worker="3">3</button>
-        </div>
-      </label>
-
-      <label class="field">
-        <span>Code PIN</span>
-        <input type="password" id="pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" autocomplete="off">
-      </label>
-
-      <button id="login-btn" class="btn btn-primary btn-lg" disabled>
-        <span>Se connecter</span>
-      </button>
-
-      <p id="login-error" class="error-msg"></p>
-    </div>
-
-    <p class="footer-note">v1.0 · Nutsa Distribution Algérie</p>
+<!-- ================== SPLASH ================== -->
+<section id="splash-screen" class="screen active">
+  <div class="splash">
+    <div class="brand-logo">🌰</div>
+    <h1 class="splash-title">Nutsa</h1>
+    <div class="splash-spinner"></div>
   </div>
 </section>
 
@@ -60,7 +32,6 @@
           <p class="header-sub" id="header-date"></p>
         </div>
       </div>
-      <button id="logout-btn" class="icon-btn" title="Déconnexion">⏻</button>
     </div>
 
     <div class="stats-row">

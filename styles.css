@@ -95,7 +95,39 @@ input {
 }
 
 /* ============================================================
-   LOGIN
+   SPLASH
+   ============================================================ */
+#splash-screen {
+  background:
+    radial-gradient(circle at 30% 20%, var(--gold-soft) 0%, transparent 55%),
+    radial-gradient(circle at 80% 80%, var(--green-glow) 0%, transparent 55%),
+    linear-gradient(135deg, var(--cream) 0%, var(--cream-2) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.splash { text-align: center; }
+.splash-title {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 8px 0 24px;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-2) 60%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.splash-spinner {
+  width: 36px; height: 36px;
+  margin: 0 auto;
+  border: 3px solid var(--line);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+/* ============================================================
+   LOGIN (legacy — kept for safety)
    ============================================================ */
 #login-screen {
   background:

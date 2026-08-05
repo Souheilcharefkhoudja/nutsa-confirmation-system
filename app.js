@@ -81,50 +81,25 @@ function showScreen(id) {
 }
 
 // ============================================================
-// LOGIN
+// AUTO-LOGIN
 // ============================================================
-let selectedWorker = null;
-
-function initLogin() {
-  $$(".worker-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      $$(".worker-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      selectedWorker = Number(btn.dataset.worker);
-      updateLoginBtn();
-    });
-  });
-
-  $("#pin-input").addEventListener("input", updateLoginBtn);
-  $("#pin-input").addEventListener("keydown", e => {
-    if (e.key === "Enter" && !$("#login-btn").disabled) doLogin();
-  });
-
-  $("#login-btn").addEventListener("click", doLogin);
-}
-
-function updateLoginBtn() {
-  const pin = $("#pin-input").value.trim();
-  $("#login-btn").disabled = !(selectedWorker && pin.length >= 4);
-}
-
-async function doLogin() {
-  const pin = $("#pin-input").value.trim();
-  if (!selectedWorker || !pin) return;
-  $("#login-btn").disabled = true;
-  $("#login-error").textContent = "";
-
+async function autoLogin() {
   try {
-    const res = await apiGet({ action: "worker_login", worker: selectedWorker, pin });
-    if (!res.ok) throw new Error(res.error || "Identifiants invalides");
+    const res = await apiGet({ action: "worker_login", worker: CFG.WORKER, pin: CFG.PIN });
+    if (!res.ok) throw new Error(res.error || "Login failed");
     state.token = res.token;
     state.worker = res.worker;
     localStorage.setItem(LS_TOKEN, res.token);
     localStorage.setItem(LS_WORKER, String(res.worker));
     enterDashboard();
   } catch (err) {
-    $("#login-error").textContent = "❌ " + err.message;
-    $("#login-btn").disabled = false;
+    document.body.innerHTML = `
+      <div style="padding:40px 24px;font-family:system-ui;text-align:center;max-width:500px;margin:60px auto;background:white;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.1)">
+        <div style="font-size:48px">🔒</div>
+        <h2 style="color:#C62828">Connexion échouée</h2>
+        <p style="color:#555">${err.message}</p>
+        <p style="color:#888;font-size:13px">Vérifiez <code>WORKER</code> et <code>PIN</code> dans <code>config.js</code>.</p>
+      </div>`;
   }
 }
 
@@ -154,7 +129,6 @@ function initDashboardEvents() {
   if (initDashboardEvents._done) return;
   initDashboardEvents._done = true;
 
-  $("#logout-btn").addEventListener("click", logout);
   $("#refresh-btn").addEventListener("click", async () => {
     $("#refresh-btn").classList.add("spinning");
     await loadOrders();
@@ -179,26 +153,14 @@ function initDashboardEvents() {
   });
 }
 
-function logout() {
-  clearInterval(state.refreshTimer);
-  state.token = state.worker = null;
-  state.orders = [];
-  localStorage.removeItem(LS_TOKEN);
-  localStorage.removeItem(LS_WORKER);
-  selectedWorker = null;
-  $$(".worker-btn").forEach(b => b.classList.remove("active"));
-  $("#pin-input").value = "";
-  $("#login-btn").disabled = true;
-  showScreen("login-screen");
-}
-
 async function loadOrders() {
   try {
     const res = await apiGet({ action: "worker_orders", wtoken: state.token });
     if (!res.ok) {
       if (String(res.error || "").toLowerCase().includes("unauthorized")) {
-        toast("Session expirée", "error");
-        return logout();
+        toast("Reconnexion…", "error");
+        localStorage.removeItem(LS_TOKEN);
+        return autoLogin();
       }
       throw new Error(res.error || "load failed");
     }
@@ -430,14 +392,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  initLogin();
-
-  // Auto-resume session
+  // Resume cached session or auto-login
   const token = localStorage.getItem(LS_TOKEN);
   const worker = localStorage.getItem(LS_WORKER);
   if (token && worker) {
     state.token = token;
     state.worker = Number(worker);
     enterDashboard();
+  } else {
+    autoLogin();
   }
 });
